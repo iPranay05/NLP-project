@@ -1,0 +1,48 @@
+text,language,expected_intent,notes
+"Mujhe 500 kg cotton chahiye, best rate batao, Mumbai delivery",hinglish,bulk_order,Classic Hinglish bulk order with qty+location
+"आपल्या उत्पादनाची किंमत किती आहे?",marathi,price_query,Marathi price inquiry
+"Yaar delivery bahut slow hai 2 hafte ho gaye",hinglish,complaint,Hinglish delivery complaint
+"Click here to WIN iPhone - Limited offer!",english,spam,Promotional spam
+"What is the wholesale price for 1000 pieces of silk saree?",english,bulk_order,English wholesale query
+"हमें हर महीने 2 टन चावल चाहिए दिल्ली डिलीवरी बजट ₹80000",hindi,bulk_order,Hindi bulk with budget
+"Product quality kharab hai refund chahiye",hinglish,complaint,Quality complaint in Hinglish
+"तुमचा माल खूप महाग आहे सवलत द्याल का?",marathi,price_query,Marathi discount request
+"I need 200 kg of turmeric powder budget is Rs 15000 Pune",english,bulk_order,English bulk spice order
+"Bhai mere ko 50 dozen cotton kurta chahiye wholesale mein",hinglish,bulk_order,Hinglish wholesale kurta
+"आपल्याकडे कापूस कापडाची किंमत किती आहे नागपूर डिलिव्हरी",marathi,price_query,Marathi fabric price query
+"Mera order 3 baar galat aaya quality bahut bekar hai",hinglish,complaint,Hinglish repeat complaint
+"हमें 10 क्विंटल गेहूं का आटा चाहिए जयपुर डिलीवरी",hindi,bulk_order,Hindi flour bulk order
+"Sir price list bhejo lehenga ka budget 5000 se 15000 hai",hinglish,price_query,Hinglish with budget range
+"Delivery nahi aayi 1 week se please help karo",hinglish,complaint,Hinglish delivery not received
+"मला ५०० किलो तांदूळ हवे आहे पुणे येथे",marathi,bulk_order,Marathi rice bulk order
+"We need 2000 meters of polyester fabric monthly from Surat",english,bulk_order,English fabric supplier query
+"आपका उत्पादन खराब निकला पैसे वापस चाहिए",hindi,complaint,Hindi refund request
+"Rate batao denim fabric ka per meter kya hai",hinglish,price_query,Hinglish fabric price per meter
+"Earn money from home guaranteed 100% returns invest now",english,spam,Financial spam
+"क्या आप दिल्ली में डिलीवरी करते हैं चावल का थोक भाव क्या है",hindi,bulk_order,Hindi wholesale rice inquiry
+"Tumhara product bilkul bekaar hai mujhe return karna hai",hinglish,complaint,Hinglish product return
+"आम्हाला दर महिन्याला 500 किलो साखर लागते मुंबई",marathi,bulk_order,Marathi monthly sugar supply
+"What is the price per kg for basmati rice minimum order?",english,price_query,English MOQ price query
+"मेरा पार्सल खुला हुआ आया सामान टूटा था शिकायत दर्ज करें",hindi,complaint,Hindi damaged goods complaint
+"Bhai 1000 pieces phone covers chahiye wholesale rate mein",hinglish,bulk_order,Hinglish electronics bulk
+"आपल्याकडे LED बल्बचा घाऊक दर काय आहे?",marathi,price_query,Marathi LED wholesale rate
+"I want to buy cotton fabric in bulk from Ahmedabad factory",english,bulk_order,English fabric factory order
+"रेट बताओ मसाला का 50 किलो दिल्ली",hindi,price_query,Hindi spice price query
+"Win free iPhone just click the link and register now",english,spam,Classic lottery spam
+"Kal order kiya tha abhi tak nahi aaya tracking nahi chal raha",hinglish,complaint,Hinglish tracking complaint
+"Please send me quotation for 500 kg turmeric CIF Mumbai",english,price_query,English formal quotation request
+"हमें हर महीने 5 टन चीनी की आपूर्ति चाहिए मुंबई",hindi,bulk_order,Hindi sugar supply monthly
+"Saree ka bhav kya hai wholesale mein Surat se",hinglish,price_query,Hinglish saree wholesale price
+"आपले उत्पादन खूप खराब आहे परत पाठवायचे आहे",marathi,complaint,Marathi complaint return
+"We need 10000 units of plastic bottles per month Pune supplier",english,bulk_order,English packaging bulk
+"Network marketing join karo ghar se karo lakhon kamao",hinglish,spam,MLM/network marketing spam
+"कीमत बताइए 100 किलो हल्दी का लखनऊ डिलीवरी बजट ₹25000",hindi,price_query,Hindi turmeric price with budget
+"Mujhe regular supply chahiye 200 kg dal ka har hafte",hinglish,bulk_order,Hinglish weekly dal supply
+"आम्हाला खूप उशीर झाला डिलिव्हरी वेळेवर आली नाही",marathi,complaint,Marathi late delivery complaint
+"What discount do you offer for orders above 100000 rupees?",english,price_query,English bulk discount inquiry
+"Bhai ye product toot gaya ek baar mein hi refund chahiye",hinglish,complaint,Hinglish broken product refund
+"नमस्ते क्या आप जूट बैग बनाते हैं ₹15 प्रति बैग",hindi,price_query,Hindi jute bag price query
+"I need 500 kg cotton thread quality A grade Tiruppur",english,bulk_order,English textile bulk order
+"Click to claim your reward free gift waiting for you now!!!",english,spam,Reward/gift spam
+"Mujhe 300 units LED bulb chahiye per piece rate kya hai",hinglish,price_query,Hinglish LED unit price query
+"आपल्याकडे सूट मटेरियल आहे का ₹200 प्रति मीटरपेक्षा कमी",marathi,price_query,Marathi fabric budget inquiry
