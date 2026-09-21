@@ -97,36 +97,190 @@ def compute_score(
     return (score, priority, breakdown)
 
 
-def get_recommended_action(intent: str, priority: str, entities: Dict) -> str:
-    """Generate a short recommended action string for the sales team."""
+def get_recommended_action(intent: str, priority: str, entities: Dict, lang: str = "en") -> str:
+    """
+    Generate a detailed, multilingual recommended action string for the sales team.
+    The action is written in the same language as the customer's inquiry so it can
+    be forwarded directly as a reply template.
+    """
     if intent == "spam":
-        return "Mark as spam. No action required."
+        spam_msgs = {
+            "en":       "🚫 Mark as spam. Block sender and do not respond.",
+            "hi":       "🚫 स्पैम के रूप में चिह्नित करें। प्रेषक को ब्लॉक करें और जवाब न दें।",
+            "mr":       "🚫 स्पॅम म्हणून चिन्हांकित करा. प्रेषकाला ब्लॉक करा आणि उत्तर देऊ नका.",
+            "mr_roman": "🚫 Spam mhanun chinhankeet kara. Presakala block kara, uttar deu naka.",
+            "hinglish": "🚫 Spam mark karo. Sender ko block karo, reply mat karo.",
+        }
+        return spam_msgs.get(lang, spam_msgs["en"])
 
     product = entities.get("product")
     qty     = entities.get("quantity")
     budget  = entities.get("budget")
     loc     = entities.get("location")
 
-    parts = []
+    # ── Urgency prefix based on priority ──────────────────────────────────────
+    urgency = {
+        "Hot": {
+            "en":       "🔴 URGENT — Call the customer within 1 hour.",
+            "hi":       "🔴 अत्यंत जरूरी — 1 घंटे के अंदर ग्राहक को कॉल करें।",
+            "mr":       "🔴 अत्यंत तातडीचे — 1 तासात ग्राहकाला कॉल करा.",
+            "mr_roman": "🔴 Atyanth tatadiche — 1 tasat grahakaala call kara.",
+            "hinglish": "🔴 URGENT — 1 ghante ke andar customer ko call karo.",
+        },
+        "Warm": {
+            "en":       "🟡 Follow up within 24 hours.",
+            "hi":       "🟡 24 घंटे के अंदर फॉलो अप करें।",
+            "mr":       "🟡 24 तासांत फॉलो अप करा.",
+            "mr_roman": "🟡 24 tasant follow up kara.",
+            "hinglish": "🟡 24 ghante ke andar follow up karo.",
+        },
+        "Cold": {
+            "en":       "🔵 Add to nurture sequence.",
+            "hi":       "🔵 नर्चर सीक्वेंस में जोड़ें।",
+            "mr":       "🔵 Nurture sequence मध्ये जोडा.",
+            "mr_roman": "🔵 Nurture sequence madhe joda.",
+            "hinglish": "🔵 Nurture sequence mein add karo.",
+        },
+    }
+
+    # ── Intent-specific action templates ──────────────────────────────────────
     if intent == "bulk_order":
-        parts.append("Send bulk pricing catalogue")
-        if qty:
-            parts.append(f"confirm availability for {qty['raw']}")
-        if loc:
-            parts.append(f"check delivery to {loc}")
+        actions = {
+            "en": (
+                f"Send the bulk pricing catalogue immediately."
+                + (f" Confirm stock availability for {qty['raw']}." if qty else "")
+                + (f" Arrange delivery logistics to {loc}." if loc else "")
+                + (f" Customer's budget is {budget['display']} — prepare a matching quote." if budget else "")
+                + (f" Highlight {product} options with volume discounts." if product else "")
+                + " Ask for a site visit or video call to close faster."
+            ),
+            "hi": (
+                f"थोक मूल्य सूची तुरंत भेजें।"
+                + (f" {qty['raw']} की उपलब्धता की पुष्टि करें।" if qty else "")
+                + (f" {loc} तक डिलीवरी की व्यवस्था करें।" if loc else "")
+                + (f" ग्राहक का बजट {budget['display']} है — उसके अनुसार कोटेशन तैयार करें।" if budget else "")
+                + (f" {product} के विकल्प और बल्क डिस्काउंट बताएं।" if product else "")
+                + " डील जल्दी बंद करने के लिए साइट विजिट या वीडियो कॉल का सुझाव दें।"
+            ),
+            "mr": (
+                f"घाऊक किंमत यादी त्वरित पाठवा."
+                + (f" {qty['raw']} साठी स्टॉकची उपलब्धता निश्चित करा." if qty else "")
+                + (f" {loc} पर्यंत डिलिव्हरीची व्यवस्था करा." if loc else "")
+                + (f" ग्राहकाचे बजेट {budget['display']} आहे — त्यानुसार कोटेशन तयार करा." if budget else "")
+                + (f" {product} चे पर्याय आणि बल्क सूट सांगा." if product else "")
+                + " व्यवहार लवकर बंद करण्यासाठी साइट व्हिजिट किंवा व्हिडिओ कॉल सुचवा."
+            ),
+            "mr_roman": (
+                f"Ghau kimmat yadi tatkal pathva."
+                + (f" {qty['raw']} sathi stock uplabdhata nishchit kara." if qty else "")
+                + (f" {loc} paryant delivery vyavastha kara." if loc else "")
+                + (f" Grahakacha budget {budget['display']} aahe — tyanusar quotation tayar kara." if budget else "")
+                + (f" {product} che paryay ani bulk sut sanga." if product else "")
+                + " Deal lavkar band karnyasathi site visit kiva video call suchva."
+            ),
+            "hinglish": (
+                f"Bulk pricing catalogue turant bhejo."
+                + (f" {qty['raw']} ki availability confirm karo." if qty else "")
+                + (f" {loc} tak delivery arrange karo." if loc else "")
+                + (f" Customer ka budget {budget['display']} hai — ussi ke hisaab se quote banao." if budget else "")
+                + (f" {product} ke options aur volume discounts highlight karo." if product else "")
+                + " Deal jaldi close karne ke liye site visit ya video call suggest karo."
+            ),
+        }
+
     elif intent == "price_query":
-        parts.append("Share product price list")
-        if product:
-            parts.append(f"focus on {product}")
-        if budget:
-            parts.append(f"budget noted: {budget['display']}")
+        actions = {
+            "en": (
+                f"Share the updated product price list."
+                + (f" Focus on {product} — prepare a specific quote." if product else "")
+                + (f" Customer's budget is around {budget['display']} — shortlist options in this range." if budget else "")
+                + (f" Confirm whether delivery to {loc} is available and at what cost." if loc else "")
+                + " Offer a free consultation call to understand their exact requirement."
+            ),
+            "hi": (
+                f"अपडेटेड प्राइस लिस्ट शेयर करें।"
+                + (f" {product} पर ध्यान दें — विशेष कोटेशन तैयार करें।" if product else "")
+                + (f" ग्राहक का बजट लगभग {budget['display']} है — उसी रेंज के विकल्प सुझाएं।" if budget else "")
+                + (f" {loc} तक डिलीवरी उपलब्ध है या नहीं और लागत क्या होगी, यह बताएं।" if loc else "")
+                + " उनकी सटीक जरूरत समझने के लिए फ्री कंसल्टेशन कॉल का प्रस्ताव दें।"
+            ),
+            "mr": (
+                f"अपडेटेड किंमत यादी शेअर करा."
+                + (f" {product} वर लक्ष द्या — विशेष कोटेशन तयार करा." if product else "")
+                + (f" ग्राहकाचे बजेट सुमारे {budget['display']} आहे — त्याच रेंजमधील पर्याय सुचवा." if budget else "")
+                + (f" {loc} पर्यंत डिलिव्हरी उपलब्ध आहे का आणि खर्च किती, ते सांगा." if loc else "")
+                + " त्यांची नेमकी गरज समजून घेण्यासाठी मोफत सल्ला कॉलचा प्रस्ताव द्या."
+            ),
+            "mr_roman": (
+                f"Updated kimmat yadi share kara."
+                + (f" {product} var laks dya — vishesh quotation tayar kara." if product else "")
+                + (f" Grahakacha budget sadharan {budget['display']} aahe — tyach range madhil paryay suchva." if budget else "")
+                + (f" {loc} paryant delivery uplabdh aahe ka ani kharch kiti, te sanga." if loc else "")
+                + " Tyanchya nemakya garajanusara free consultation call cha prastaav dya."
+            ),
+            "hinglish": (
+                f"Updated price list share karo."
+                + (f" {product} pe focus karo — specific quote banao." if product else "")
+                + (f" Customer ka budget lagbhag {budget['display']} hai — usi range ke options suggest karo." if budget else "")
+                + (f" {loc} tak delivery available hai ya nahi aur cost kya hogi, batao." if loc else "")
+                + " Unki exact zaroorat samajhne ke liye free consultation call offer karo."
+            ),
+        }
+
     elif intent == "complaint":
-        parts.append("Escalate to support team")
-        parts.append("request order ID for resolution")
+        actions = {
+            "en": (
+                "Escalate to the support team immediately."
+                + (f" Issue involves: {product}." if product else "")
+                + (f" Customer is in {loc} — check if a field visit is needed." if loc else "")
+                + " Request the order ID and date of purchase."
+                + " Check if the item is under warranty and initiate replacement/refund process."
+                + " Send an apology message within 2 hours to retain customer trust."
+            ),
+            "hi": (
+                "सपोर्ट टीम को तुरंत सूचित करें।"
+                + (f" समस्या: {product} से संबंधित है।" if product else "")
+                + (f" ग्राहक {loc} में हैं — फील्ड विजिट की जरूरत है या नहीं, जांचें।" if loc else "")
+                + " ऑर्डर ID और खरीद की तारीख मांगें।"
+                + " वारंटी की जांच करें और रिप्लेसमेंट/रिफंड प्रक्रिया शुरू करें।"
+                + " ग्राहक का विश्वास बनाए रखने के लिए 2 घंटे के अंदर माफ़ी का संदेश भेजें।"
+            ),
+            "mr": (
+                "सपोर्ट टीमला ताबडतोब कळवा."
+                + (f" समस्या: {product} संबंधित आहे." if product else "")
+                + (f" ग्राहक {loc} मध्ये आहेत — फील्ड व्हिजिटची गरज आहे का ते तपासा." if loc else "")
+                + " ऑर्डर ID आणि खरेदीची तारीख मागवा."
+                + " वॉरंटी तपासा आणि बदली/परतावा प्रक्रिया सुरू करा."
+                + " ग्राहकाचा विश्वास टिकवण्यासाठी 2 तासांत माफीचा संदेश पाठवा."
+            ),
+            "mr_roman": (
+                "Support teamla tatkal kalava."
+                + (f" Samasya: {product} sambandhit aahe." if product else "")
+                + (f" Grahak {loc} madhe aahet — field visit chi garaj aahe ka te tapasa." if loc else "")
+                + " Order ID ani kharedichi tarikh magva."
+                + " Warranty tapasa ani badali/paratava prakriya suru kara."
+                + " Grahakache vishwas tikvanyasathi 2 tasant maficha sandesh pathva."
+            ),
+            "hinglish": (
+                "Support team ko turant inform karo."
+                + (f" Issue {product} se related hai." if product else "")
+                + (f" Customer {loc} mein hai — field visit ki zaroorat hai ya nahi, check karo." if loc else "")
+                + " Order ID aur purchase date maango."
+                + " Warranty check karo aur replacement/refund process start karo."
+                + " Customer ka trust banaye rakhne ke liye 2 ghante mein maafi ka message bhejo."
+            ),
+        }
+    else:
+        actions = {
+            "en": "Review this inquiry manually and assign to the appropriate team.",
+            "hi": "इस इनक्वायरी की समीक्षा करें और उचित टीम को असाइन करें।",
+            "mr": "ही इन्क्वायरी तपासा आणि योग्य टीमला असाइन करा.",
+            "mr_roman": "Hi inquiry tapasa ani yogya teamla assign kara.",
+            "hinglish": "Is inquiry ko manually review karo aur sahi team ko assign karo.",
+        }
 
-    if priority == "Hot":
-        parts.insert(0, "🔴 URGENT — call within 1 hour")
-    elif priority == "Warm":
-        parts.insert(0, "🟡 Follow up within 24 hours")
-
-    return ". ".join(parts) + "." if parts else "Review manually."
+    # ── Combine urgency prefix + action ───────────────────────────────────────
+    lang_key = lang if lang in ("en", "hi", "mr", "mr_roman", "hinglish") else "en"
+    u = urgency.get(priority, urgency["Cold"]).get(lang_key, urgency["Cold"]["en"])
+    a = actions.get(lang_key, actions["en"]) if isinstance(actions, dict) else actions
+    return f"{u} {a}"

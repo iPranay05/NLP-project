@@ -48,7 +48,7 @@ def analyze(text: str) -> Dict:
     )
 
     # ── Step 5: Recommended Action ─────────────────────────────────────────────
-    action = get_recommended_action(intent, priority, entities)
+    action = get_recommended_action(intent, priority, entities, lang=pre["language"])
 
     return {
         "id":                 str(uuid.uuid4())[:8],
